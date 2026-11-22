@@ -26,11 +26,15 @@ nav a{color:#0a1e3f;text-decoration:none;margin-left:12px;font-size:14px;font-we
 .card-left{display:flex;gap:12px;align-items:flex-start}
 .icon{width:48px;height:48px;border-radius:12px;background:#eaf2ff;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
 .card h3{font-size:17px;margin-bottom:4px}.card p{font-size:13px;color:#666}
+.stock-badge{color:#0b5ed7;font-weight:700;margin-left:4px}
+.out-badge{color:#dc3545;font-weight:700;margin-left:4px}
 .price{font-size:20px;font-weight:900;color:#ff6b1a;white-space:nowrap}
 .buy-btn{background:#ff6b1a;color:white;border:none;padding:9px 14px;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:8px}
+.buy-btn:disabled{background:#b8c2d1;cursor:not-allowed}
 .section{padding:8px 4px}
 .section h2{padding:14px 15px 4px;font-size:24px}
-input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;background:white;color:#0a1e3f}
+input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;background:white;color:#0a1e3f}
+textarea{min-height:110px;resize:vertical;font-family:monospace;font-size:13px}
 .hidden{display:none}
 .wallet{background:#0a2a6b;color:white;border-radius:16px;padding:20px;margin:15px}
 .wallet h2{font-size:36px;margin:8px 0}
@@ -40,6 +44,8 @@ input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-r
 .admin-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 10px}
 .stat{background:#0a2a6b;color:white;padding:15px;border-radius:12px}.stat b{font-size:22px}
 .tx-item{padding:10px 0;border-bottom:1px solid #eee;font-size:13px}
+.cred-box{background:#f4f6fb;border:1px solid #d5dfef;border-radius:10px;padding:10px;margin-top:8px;font-family:monospace;font-size:13px;color:#0a1e3f;word-break:break-all}
+.active-user-bar{background:#eaf2ff;border:1px solid #cfe0ff;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .prod-admin-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}
 .prod-admin-actions{display:flex;gap:6px;flex-shrink:0}
 footer{text-align:center;padding:20px;font-size:13px;color:#888}
@@ -80,12 +86,22 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
 <div id="wallet" class="hidden">
   <div class="section">
     <div class="card" style="display:block">
-      <h2>Customer Details</h2>
-      <p style="margin-bottom:8px">Required before funding wallet or placing an order.</p>
+      <h2>Customer Account</h2>
+      <p style="margin-bottom:8px">Choose a unique username and save your details before funding or ordering.</p>
+
+      <div id="activeUserBanner" class="active-user-bar hidden">
+        <div id="activeUserSummary"></div>
+        <button class="btn-sm btn-secondary" onclick="logoutUser()">Switch User</button>
+      </div>
+
+      <input id="userHandle" placeholder="Unique Username e.g. chidera_vpn (cannot be reused)">
       <input id="userName" placeholder="Your Full Name e.g. Chidera">
       <input id="userEmail" type="email" placeholder="Valid Email Address e.g. chidera@gmail.com">
       <input id="userWhatsapp" type="tel" placeholder="WhatsApp Number for Order Delivery">
-      <button class="btn" onclick="saveProfile()">Save Details</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="saveProfile()">Save / Register Account</button>
+        <button class="btn btn-secondary" onclick="loginExistingUser()">Login Existing Username</button>
+      </div>
     </div>
 
     <div class="wallet">
@@ -100,8 +116,13 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
       </div>
       <div class="vacc">
         <b>How Payment Works:</b><br>
-        Click <b>Pay Now with Paystack</b> above to pay securely via <b>Instant Bank Transfer, Card, or USSD</b>. Your wallet updates immediately after payment confirmation.
+        Click <b>Pay Now with Paystack</b> above to pay securely via <b>Instant Bank Transfer, Card, or USSD</b>. Your wallet updates immediately after payment confirmation, and account logins appear right below after purchase.
       </div>
+    </div>
+
+    <div class="card" style="display:block">
+      <h3>My Purchased Logins</h3>
+      <div id="deliveredLogins" style="margin-top:8px">No account logins delivered yet.</div>
     </div>
 
     <div class="card" style="display:block">
@@ -137,9 +158,9 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
     <div class="card" style="display:block">
       <h3 id="productFormTitle">Create New Product</h3>
       <input type="hidden" id="editProductId">
-      <input id="prodName" placeholder="Product Name e.g. Telegram Members">
-      <input id="prodDesc" placeholder="Short Description e.g. Fast delivery • Real profiles">
-      <input id="prodPrice" type="number" placeholder="Price in Naira (₦) e.g. 8000">
+      <input id="prodName" placeholder="Product Name e.g. HMA VPN 1-month access">
+      <input id="prodDesc" placeholder="Short Description e.g. Instant login delivery • 1 month access">
+      <input id="prodPrice" type="number" placeholder="Price in Naira (₦) e.g. 3000">
       <select id="prodIcon">
         <option value="🛡️">🛡️ Shield / VPN</option>
         <option value="📸">📸 Instagram / Photo</option>
@@ -148,6 +169,10 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
         <option value="🚀">🚀 Growth / Rocket</option>
         <option value="⭐">⭐ Featured / Star</option>
       </select>
+      <label style="display:block;font-size:13px;font-weight:bold;margin-top:8px">
+        Account Logins Stock Pool (1 login per line — leave empty for non-credential services)
+      </label>
+      <textarea id="prodCredentials" placeholder="Paste one login per line, e.g.:&#10;hma_user1@mail.com:Pass123!&#10;hma_user2@mail.com:Pass456!"></textarea>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
         <button class="btn" id="saveProductBtn" onclick="saveProduct()">Add Product</button>
         <button class="btn btn-secondary hidden" id="cancelEditBtn" onclick="resetProductForm()">Cancel Edit</button>
@@ -181,32 +206,63 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
 // ==========================================
 const PAYSTACK_PUBLIC_KEY = 'pk_live_9ca1449cfb80135453090d6b0b41556c13777192';
 const ADMIN_PASSWORD = 'Nzeribe70@';
-const STORAGE_KEY = 'nxsocials_store_v2';
+const STORAGE_KEY = 'nxsocials_store_v3';
 
 const DEFAULT_PRODUCTS = [
-  { id: 'vpn_1m', name: 'Premium VPN 1 Month', desc: 'Fast, secure & private connection • Unlimited data', price: 6000, icon: '🛡️', isVpn: true },
-  { id: 'ig_growth', name: 'Instagram Growth Service', desc: 'Followers, Likes & Views • Organic growth', price: 15000, icon: '📸', isVpn: false },
-  { id: 'ads_setup', name: 'Ads Setup - TikTok / Meta', desc: 'Setup & Management • Targeted campaigns', price: 10000, icon: '📢', isVpn: false },
-  { id: 'tt_growth', name: 'TikTok Growth Service', desc: 'Views, Followers & Engagement • Fast delivery', price: 25000, icon: '🎬', isVpn: false }
+  { id: 'vpn_1m', name: 'HMA VPN 1-month access', desc: 'Fast, secure & private connection • Instant login delivery', price: 3000, icon: '🛡️', isVpn: true, credentials: [] },
+  { id: 'ig_growth', name: 'Instagram Growth Service', desc: 'Followers, Likes & Views • Organic growth', price: 15000, icon: '📸', isVpn: false, credentials: [] },
+  { id: 'ads_setup', name: 'Ads Setup - TikTok / Meta', desc: 'Setup & Management • Targeted campaigns', price: 10000, icon: '📢', isVpn: false, credentials: [] },
+  { id: 'tt_growth', name: 'TikTok Growth Service', desc: 'Views, Followers & Engagement • Fast delivery', price: 25000, icon: '🎬', isVpn: false, credentials: [] }
 ];
 
-// Load saved state from localStorage or initialize defaults
+function createEmptyUserRecord(username, name, email, whatsapp) {
+  return {
+    username,
+    name,
+    email,
+    whatsapp,
+    balance: 0,
+    orders: 0,
+    totalDeposits: 0,
+    history: [],
+    deliveredLogins: []
+  };
+}
+
 let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-  user: null,
-  balance: 0,
+  users: {},
+  activeUsername: null,
   orders: 0,
   revenue: 0,
   totalFees: 0,
   totalDeposits: 0,
   serviceFee: 30,
-  vpnPrice: 6000,
-  products: DEFAULT_PRODUCTS.map(p => ({ ...p })),
-  history: [],
+  vpnPrice: 3000,
+  products: DEFAULT_PRODUCTS.map(p => ({ ...p, credentials: [...p.credentials] })),
   adminLogs: []
 };
 
+if (!state.users || typeof state.users !== 'object') {
+  state.users = {};
+}
 if (!Array.isArray(state.products) || state.products.length === 0) {
-  state.products = DEFAULT_PRODUCTS.map(p => ({ ...p }));
+  state.products = DEFAULT_PRODUCTS.map(p => ({ ...p, credentials: [...p.credentials] }));
+}
+state.products.forEach(p => {
+  if (!Array.isArray(p.credentials)) p.credentials = [];
+});
+
+function getCurrentUser() {
+  if (!state.activeUsername) return null;
+  return state.users[state.activeUsername] || null;
+}
+
+function normalizeUsername(raw) {
+  return String(raw || '').trim().toLowerCase();
+}
+
+function isValidUsername(u) {
+  return /^[a-z0-9._-]{3,24}$/.test(u);
 }
 
 function saveState() {
@@ -236,22 +292,63 @@ function escapeHtml(str) {
 }
 
 function saveProfile() {
+  const username = normalizeUsername(document.getElementById('userHandle').value);
   const name = document.getElementById('userName').value.trim();
   const email = document.getElementById('userEmail').value.trim();
   const whatsapp = document.getElementById('userWhatsapp').value.trim();
 
+  if (!isValidUsername(username)) {
+    alert('Choose a unique username of 3-24 characters using lowercase letters, numbers, dots, underscores, or hyphens.');
+    return;
+  }
   if (!name || !isValidEmail(email) || !whatsapp) {
     alert('Please enter your Name, a valid Email address, and your WhatsApp number.');
     return;
   }
 
-  const isNewUser = !state.user;
-  state.user = { name, email, whatsapp };
-  if (isNewUser) {
-    state.adminLogs.unshift(`👤 New Customer: ${name} (${email} | WA: ${whatsapp})`);
+  const currentUser = getCurrentUser();
+  const existingRecord = state.users[username];
+
+  if (existingRecord && (!currentUser || currentUser.username !== username)) {
+    alert(`The username "${username}" is already taken by another user. Please choose a different username or use "Login Existing Username".`);
+    return;
   }
+
+  if (currentUser && currentUser.username === username) {
+    currentUser.name = name;
+    currentUser.email = email;
+    currentUser.whatsapp = whatsapp;
+    saveState();
+    alert(`Profile updated for @${username}.`);
+    return;
+  }
+
+  const newUser = createEmptyUserRecord(username, name, email, whatsapp);
+  state.users[username] = newUser;
+  state.activeUsername = username;
+  state.adminLogs.unshift(`👤 New User: @${username} (${name} | ${email} | WA: ${whatsapp})`);
   saveState();
-  alert(`Details saved for ${name}! You can now fund your wallet via Paystack.`);
+  alert(`Account registered with unique username @${username}! You can now fund your wallet via Paystack.`);
+}
+
+function loginExistingUser() {
+  const username = normalizeUsername(document.getElementById('userHandle').value);
+  if (!username || !state.users[username]) {
+    alert('No registered account found with that username. Fill all fields and click "Save / Register Account" to claim a new unique username.');
+    return;
+  }
+  state.activeUsername = username;
+  saveState();
+  alert(`Logged in as @${username}.`);
+}
+
+function logoutUser() {
+  state.activeUsername = null;
+  document.getElementById('userHandle').value = '';
+  document.getElementById('userName').value = '';
+  document.getElementById('userEmail').value = '';
+  document.getElementById('userWhatsapp').value = '';
+  saveState();
 }
 
 function updateFeePreview() {
@@ -262,8 +359,9 @@ function updateFeePreview() {
 }
 
 function payWithPaystack() {
-  if (!state.user || !isValidEmail(state.user.email)) {
-    alert('Please enter and save your Name, Email, and WhatsApp number above first.');
+  const user = getCurrentUser();
+  if (!user || !isValidEmail(user.email)) {
+    alert('Please register/login with your unique username, name, email, and WhatsApp number first.');
     return;
   }
 
@@ -280,28 +378,30 @@ function payWithPaystack() {
 
   const handler = PaystackPop.setup({
     key: PAYSTACK_PUBLIC_KEY,
-    email: state.user.email,
-    amount: depositAmount * 100, // Paystack requires amount in Kobo
+    email: user.email,
+    amount: depositAmount * 100,
     currency: 'NGN',
     ref: 'NXS_' + Math.floor((Math.random() * 1000000000) + 1),
     metadata: {
       custom_fields: [
-        { display_name: 'Customer Name', variable_name: 'customer_name', value: state.user.name },
-        { display_name: 'WhatsApp', variable_name: 'whatsapp', value: state.user.whatsapp }
+        { display_name: 'Username', variable_name: 'username', value: user.username },
+        { display_name: 'Customer Name', variable_name: 'customer_name', value: user.name },
+        { display_name: 'WhatsApp', variable_name: 'whatsapp', value: user.whatsapp }
       ]
     },
     callback: function(response) {
       const creditAmount = depositAmount - state.serviceFee;
-      state.balance += creditAmount;
+      user.balance += creditAmount;
+      user.totalDeposits += 1;
       state.totalFees += state.serviceFee;
       state.totalDeposits += 1;
 
       const time = new Date().toLocaleString();
-      state.history.unshift(`✅ [${time}] Deposited ₦${depositAmount.toLocaleString()} (Fee: ₦${state.serviceFee}) → Credited ₦${creditAmount.toLocaleString()} | Ref: ${response.reference}`);
-      state.adminLogs.unshift(`💰 Deposit: ₦${depositAmount.toLocaleString()} by ${state.user.name} (Ref: ${response.reference})`);
+      user.history.unshift(`✅ [${time}] Deposited ₦${depositAmount.toLocaleString()} (Fee: ₦${state.serviceFee}) → Credited ₦${creditAmount.toLocaleString()} | Ref: ${response.reference}`);
+      state.adminLogs.unshift(`💰 Deposit: ₦${depositAmount.toLocaleString()} by @${user.username} (${user.name}, Ref: ${response.reference})`);
       saveState();
 
-      alert(`Payment successful! Ref: ${response.reference}\n₦${creditAmount.toLocaleString()} has been added to your wallet.`);
+      alert(`Payment successful! Ref: ${response.reference}\n₦${creditAmount.toLocaleString()} has been added to @${user.username}'s wallet.`);
     },
     onClose: function() {
       alert('Payment window closed.');
@@ -314,33 +414,55 @@ function payWithPaystack() {
 function buyById(productId) {
   const item = state.products.find(p => p.id === productId);
   if (!item) return;
+
+  const user = getCurrentUser();
+  if (!user) {
+    alert('Please register or log in with your unique username and fund your wallet first.');
+    show('wallet');
+    return;
+  }
+
+  const hasStockPool = Array.isArray(item.credentials) && item.credentials.length > 0;
+  if (hasStockPool && item.credentials.length <= 0) {
+    alert(`${item.name} is currently out of stock.`);
+    return;
+  }
+
   const price = item.isVpn ? state.vpnPrice : item.price;
-  buy(item.name, price);
-}
-
-function buy(product, price) {
-  if (!state.user) {
-    alert('Please enter your customer details and fund your wallet first.');
+  if (user.balance < price) {
+    alert(`Insufficient balance (₦${user.balance.toLocaleString()}). You need ₦${price.toLocaleString()}. Please fund your wallet first.`);
     show('wallet');
     return;
   }
 
-  if (state.balance < price) {
-    alert(`Insufficient balance (₦${state.balance.toLocaleString()}). You need ₦${price.toLocaleString()}. Please fund your wallet first.`);
-    show('wallet');
-    return;
-  }
-
-  state.balance -= price;
+  user.balance -= price;
+  user.orders += 1;
   state.orders += 1;
   state.revenue += price;
 
-  const time = new Date().toLocaleString();
-  state.history.unshift(`🛒 [${time}] Ordered ${product} (-₦${price.toLocaleString()})`);
-  state.adminLogs.unshift(`📦 Order: ${product} (₦${price.toLocaleString()}) by ${state.user.name} | WA: ${state.user.whatsapp}`);
-  saveState();
+  let assignedCredential = null;
+  if (hasStockPool) {
+    assignedCredential = item.credentials.shift();
+  }
 
-  alert(`Order confirmed for ${product}! We will deliver to your WhatsApp (${state.user.whatsapp}) shortly.`);
+  const time = new Date().toLocaleString();
+  if (assignedCredential !== null) {
+    user.deliveredLogins.unshift({
+      productName: item.name,
+      credential: assignedCredential,
+      time,
+      price
+    });
+    user.history.unshift(`🛒 [${time}] Bought ${item.name} (-₦${price.toLocaleString()}) → Login delivered`);
+    state.adminLogs.unshift(`📦 Auto-Delivered: ${item.name} (₦${price.toLocaleString()}) to @${user.username} | Remaining stock: ${item.credentials.length}`);
+    saveState();
+    alert(`Purchase successful for ${item.name}!\n\nYour Account Login:\n${assignedCredential}\n\nSaved under "My Purchased Logins" in your account.`);
+  } else {
+    user.history.unshift(`🛒 [${time}] Ordered ${item.name} (-₦${price.toLocaleString()})`);
+    state.adminLogs.unshift(`📦 Order: ${item.name} (₦${price.toLocaleString()}) by @${user.username} | WA: ${user.whatsapp}`);
+    saveState();
+    alert(`Order confirmed for ${item.name}! We will deliver to your WhatsApp (${user.whatsapp}) shortly.`);
+  }
 }
 
 function loginAdmin() {
@@ -353,12 +475,20 @@ function loginAdmin() {
   }
 }
 
+function parseCredentialLines(rawText) {
+  return String(rawText || '')
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line.length > 0);
+}
+
 function saveProduct() {
   const editId = document.getElementById('editProductId').value.trim();
   const name = document.getElementById('prodName').value.trim();
   const desc = document.getElementById('prodDesc').value.trim() || 'Fast delivery • Trusted service';
   const price = parseInt(document.getElementById('prodPrice').value);
   const icon = document.getElementById('prodIcon').value;
+  const credentials = parseCredentialLines(document.getElementById('prodCredentials').value);
 
   if (!name || isNaN(price) || price <= 0) {
     alert('Please enter a valid product name and a price greater than ₦0.');
@@ -372,10 +502,11 @@ function saveProduct() {
       state.products[idx].desc = desc;
       state.products[idx].price = price;
       state.products[idx].icon = icon;
+      state.products[idx].credentials = credentials;
       if (state.products[idx].isVpn) {
         state.vpnPrice = price;
       }
-      state.adminLogs.unshift(`✏️ Updated Product: ${name} (₦${price.toLocaleString()})`);
+      state.adminLogs.unshift(`✏️ Updated Product: ${name} (₦${price.toLocaleString()} | Stock: ${credentials.length})`);
     }
     resetProductForm();
     saveState();
@@ -387,10 +518,11 @@ function saveProduct() {
       desc,
       price,
       icon,
-      isVpn: false
+      isVpn: false,
+      credentials
     };
     state.products.push(newProd);
-    state.adminLogs.unshift(`➕ Created Product: ${name} (₦${price.toLocaleString()})`);
+    state.adminLogs.unshift(`➕ Created Product: ${name} (₦${price.toLocaleString()} | Stock: ${credentials.length})`);
     resetProductForm();
     saveState();
     alert(`Added "${name}" to Our Services!`);
@@ -407,6 +539,7 @@ function startEditProduct(id) {
   document.getElementById('prodDesc').value = item.desc;
   document.getElementById('prodPrice').value = effectivePrice;
   document.getElementById('prodIcon').value = item.icon || '⭐';
+  document.getElementById('prodCredentials').value = Array.isArray(item.credentials) ? item.credentials.join('\n') : '';
   document.getElementById('productFormTitle').innerText = 'Edit Product';
   document.getElementById('saveProductBtn').innerText = 'Save Changes';
   document.getElementById('cancelEditBtn').classList.remove('hidden');
@@ -432,6 +565,7 @@ function resetProductForm() {
   document.getElementById('prodDesc').value = '';
   document.getElementById('prodPrice').value = '';
   document.getElementById('prodIcon').value = '🛡️';
+  document.getElementById('prodCredentials').value = '';
   document.getElementById('productFormTitle').innerText = 'Create New Product';
   document.getElementById('saveProductBtn').innerText = 'Add Product';
   document.getElementById('cancelEditBtn').classList.add('hidden');
@@ -462,14 +596,26 @@ function renderServices() {
 
   container.innerHTML = state.products.map(p => {
     const displayPrice = p.isVpn ? state.vpnPrice : p.price;
+    const creds = Array.isArray(p.credentials) ? p.credentials : [];
+    const hasStockPool = creds.length > 0 || p.isVpn;
+    const stockCount = creds.length;
+    const isSoldOut = hasStockPool && stockCount <= 0;
+
+    let stockLabel = '';
+    if (hasStockPool) {
+      stockLabel = isSoldOut
+        ? `<span class="out-badge">(0 available)</span>`
+        : `<span class="stock-badge">(${stockCount} available)</span>`;
+    }
+
     return `
       <div class="card">
         <div class="card-left">
           <div class="icon">${escapeHtml(p.icon || '⭐')}</div>
           <div>
-            <h3>${escapeHtml(p.name)}</h3>
+            <h3>${escapeHtml(p.name)} ${stockLabel}</h3>
             <p>${escapeHtml(p.desc)}</p>
-            <button class="buy-btn" onclick="buyById('${escapeHtml(p.id)}')">Buy Now</button>
+            <button class="buy-btn" ${isSoldOut ? 'disabled' : ''} onclick="buyById('${escapeHtml(p.id)}')">${isSoldOut ? 'Out of Stock' : 'Buy Now'}</button>
           </div>
         </div>
         <div class="price">₦${displayPrice.toLocaleString()}</div>
@@ -487,10 +633,11 @@ function renderAdminProducts() {
 
   container.innerHTML = state.products.map(p => {
     const displayPrice = p.isVpn ? state.vpnPrice : p.price;
+    const stockCount = Array.isArray(p.credentials) ? p.credentials.length : 0;
     return `
       <div class="prod-admin-row">
         <div>
-          <b>${escapeHtml(p.icon || '⭐')} ${escapeHtml(p.name)}</b> — <b>₦${displayPrice.toLocaleString()}</b><br>
+          <b>${escapeHtml(p.icon || '⭐')} ${escapeHtml(p.name)}</b> — ₦${displayPrice.toLocaleString()} <b>(${stockCount} logins in stock)</b><br>
           <small style="color:#666">${escapeHtml(p.desc)}</small>
         </div>
         <div class="prod-admin-actions">
@@ -503,43 +650,65 @@ function renderAdminProducts() {
 }
 
 function renderUI() {
-  // Prefill user fields if saved
-  if (state.user) {
-    document.getElementById('userName').value = state.user.name;
-    document.getElementById('userEmail').value = state.user.email;
-    document.getElementById('userWhatsapp').value = state.user.whatsapp;
-  }
-
-  // Balances & Prices
-  document.getElementById('balance').innerText = state.balance.toLocaleString();
-  document.getElementById('feeDisplay').innerText = state.serviceFee.toLocaleString();
-  document.getElementById('vpnPriceInput').value = state.vpnPrice;
-  document.getElementById('serviceFeeInput').value = state.serviceFee;
-
-  // Services & Admin Product Manager
   renderServices();
   renderAdminProducts();
 
-  // Admin Stats
-  document.getElementById('totalUsers').innerText = state.user ? 1 : 0;
+  const user = getCurrentUser();
+  const banner = document.getElementById('activeUserBanner');
+  if (user) {
+    banner.classList.remove('hidden');
+    document.getElementById('activeUserSummary').innerHTML =
+      `Active Account: <b>@${escapeHtml(user.username)}</b> (${escapeHtml(user.name)})`;
+    document.getElementById('userHandle').value = user.username;
+    document.getElementById('userName').value = user.name;
+    document.getElementById('userEmail').value = user.email;
+    document.getElementById('userWhatsapp').value = user.whatsapp;
+  } else {
+    banner.classList.add('hidden');
+  }
+
+  document.getElementById('balance').innerText = (user ? user.balance : 0).toLocaleString();
+  document.getElementById('feeDisplay').innerText = state.serviceFee.toLocaleString();
+  document.getElementById('vpnPriceInput').value = state.vpnPrice;
+  document.getElementById('serviceFeeInput').value = state.serviceFee;
+  updateFeePreview();
+
+  const loginsEl = document.getElementById('deliveredLogins');
+  if (!user) {
+    loginsEl.innerHTML = 'Register or log in with your unique username to view delivered logins.';
+  } else if (!user.deliveredLogins || !user.deliveredLogins.length) {
+    loginsEl.innerHTML = 'No account logins delivered yet.';
+  } else {
+    loginsEl.innerHTML = user.deliveredLogins.map(item => `
+      <div class="tx-item">
+        <b>${escapeHtml(item.productName)}</b> <span style="color:#666">(${escapeHtml(item.time)})</span>
+        <div class="cred-box">${escapeHtml(item.credential)}</div>
+      </div>
+    `).join('');
+  }
+
+  const histEl = document.getElementById('history');
+  if (!user || !user.history.length) {
+    histEl.innerHTML = 'No transactions yet.';
+  } else {
+    histEl.innerHTML = user.history.map(h => `<div class="tx-item">${escapeHtml(h)}</div>`).join('');
+  }
+
+  const usersList = Object.values(state.users);
+  document.getElementById('totalUsers').innerText = usersList.length;
   document.getElementById('totalOrders').innerText = state.orders;
   document.getElementById('totalRev').innerText = state.revenue.toLocaleString();
   document.getElementById('totalFees').innerText = state.totalFees.toLocaleString();
   document.getElementById('totalDeposits').innerText = state.totalDeposits;
 
-  // Logs & History
-  document.getElementById('history').innerHTML = state.history.length
-    ? state.history.map(item => `<div class="tx-item">${escapeHtml(item)}</div>`).join('')
-    : 'No transactions yet.';
-
-  document.getElementById('userList').innerHTML = state.adminLogs.length
-    ? state.adminLogs.map(log => `<div class="tx-item">${escapeHtml(log)}</div>`).join('')
-    : 'No activity yet.';
-
-  updateFeePreview();
+  const logsEl = document.getElementById('userList');
+  if (!state.adminLogs.length) {
+    logsEl.innerHTML = 'No activity yet.';
+  } else {
+    logsEl.innerHTML = state.adminLogs.map(l => `<div class="tx-item">${escapeHtml(l)}</div>`).join('');
+  }
 }
 
-// Initialize UI on page load
 renderUI();
 </script>
 </body>
