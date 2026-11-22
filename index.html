@@ -26,6 +26,7 @@ nav a{color:#0a1e3f;text-decoration:none;margin-left:12px;font-size:14px;font-we
 .card-left{display:flex;gap:12px;align-items:flex-start}
 .icon{width:48px;height:48px;border-radius:12px;background:#eaf2ff;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
 .card h3{font-size:17px;margin-bottom:4px}.card p{font-size:13px;color:#666}
+.cat-tag{display:inline-block;font-size:11px;font-weight:700;color:#0a2a6b;background:#eaf2ff;padding:2px 8px;border-radius:999px;margin-bottom:6px}
 .stock-badge{color:#0b5ed7;font-weight:700;margin-left:4px}
 .out-badge{color:#dc3545;font-weight:700;margin-left:4px}
 .price{font-size:20px;font-weight:900;color:#ff6b1a;white-space:nowrap}
@@ -162,12 +163,11 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
       <input id="prodDesc" placeholder="Short Description e.g. Instant login delivery • 1 month access">
       <input id="prodPrice" type="number" placeholder="Price in Naira (₦) e.g. 3000">
       <select id="prodIcon">
-        <option value="🛡️">🛡️ Shield / VPN</option>
-        <option value="📸">📸 Instagram / Photo</option>
-        <option value="📢">📢 Ads / Megaphone</option>
-        <option value="🎬">🎬 TikTok / Video</option>
-        <option value="🚀">🚀 Growth / Rocket</option>
-        <option value="⭐">⭐ Featured / Star</option>
+        <option value="📘|Facebook accounts">📘 Facebook accounts</option>
+        <option value="📸|Instagram accounts">📸 Instagram accounts</option>
+        <option value="🎬|TikTok accounts">🎬 TikTok accounts</option>
+        <option value="🛡️|VPNs">🛡️ VPNs</option>
+        <option value="📺|TV access">📺 TV access</option>
       </select>
       <label style="display:block;font-size:13px;font-weight:bold;margin-top:8px">
         Account Logins Stock Pool (1 login per line — leave empty for non-credential services)
@@ -186,7 +186,7 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
 
     <div class="card" style="display:block">
       <h3>Store Pricing & Fees</h3>
-      <p style="margin-top:8px">VPN 1 Month Price (₦): <input id="vpnPriceInput" type="number" value="6000"></p>
+      <p style="margin-top:8px">VPN 1 Month Price (₦): <input id="vpnPriceInput" type="number" value="3000"></p>
       <p>Deposit Service Fee (₦): <input id="serviceFeeInput" type="number" value="30"></p>
       <button class="btn" onclick="updateStoreSettings()">Save Prices & Fee</button>
     </div>
@@ -208,12 +208,27 @@ const PAYSTACK_PUBLIC_KEY = 'pk_live_9ca1449cfb80135453090d6b0b41556c13777192';
 const ADMIN_PASSWORD = 'Nzeribe70@';
 const STORAGE_KEY = 'nxsocials_store_v3';
 
-const DEFAULT_PRODUCTS = [
-  { id: 'vpn_1m', name: 'HMA VPN 1-month access', desc: 'Fast, secure & private connection • Instant login delivery', price: 3000, icon: '🛡️', isVpn: true, credentials: [] },
-  { id: 'ig_growth', name: 'Instagram Growth Service', desc: 'Followers, Likes & Views • Organic growth', price: 15000, icon: '📸', isVpn: false, credentials: [] },
-  { id: 'ads_setup', name: 'Ads Setup - TikTok / Meta', desc: 'Setup & Management • Targeted campaigns', price: 10000, icon: '📢', isVpn: false, credentials: [] },
-  { id: 'tt_growth', name: 'TikTok Growth Service', desc: 'Views, Followers & Engagement • Fast delivery', price: 25000, icon: '🎬', isVpn: false, credentials: [] }
+const CATEGORIES = [
+  { key: '📘|Facebook accounts', icon: '📘', label: 'Facebook accounts' },
+  { key: '📸|Instagram accounts', icon: '📸', label: 'Instagram accounts' },
+  { key: '🎬|TikTok accounts', icon: '🎬', label: 'TikTok accounts' },
+  { key: '🛡️|VPNs', icon: '🛡️', label: 'VPNs' },
+  { key: '📺|TV access', icon: '📺', label: 'TV access' }
 ];
+
+const DEFAULT_PRODUCTS = [
+  { id: 'vpn_1m', name: 'HMA VPN 1-month access', desc: 'Fast, secure & private connection • Instant login delivery', price: 3000, icon: '🛡️', category: 'VPNs', isVpn: true, credentials: [] },
+  { id: 'fb_acc', name: 'Facebook Account', desc: 'Ready-to-use account • Instant login delivery', price: 5000, icon: '📘', category: 'Facebook accounts', isVpn: false, credentials: [] },
+  { id: 'ig_acc', name: 'Instagram Account', desc: 'Ready-to-use account • Instant login delivery', price: 7000, icon: '📸', category: 'Instagram accounts', isVpn: false, credentials: [] },
+  { id: 'tt_acc', name: 'TikTok Account', desc: 'Ready-to-use account • Instant login delivery', price: 8000, icon: '🎬', category: 'TikTok accounts', isVpn: false, credentials: [] },
+  { id: 'tv_acc', name: 'TV Access Subscription', desc: 'Streaming access • Instant login delivery', price: 4500, icon: '📺', category: 'TV access', isVpn: false, credentials: [] }
+];
+
+function parseCategoryOption(rawVal) {
+  const matched = CATEGORIES.find(c => c.key === rawVal || c.label === rawVal || c.icon === rawVal);
+  if (matched) return { icon: matched.icon, category: matched.label, key: matched.key };
+  return { icon: '📘', category: 'Facebook accounts', key: '📘|Facebook accounts' };
+}
 
 function createEmptyUserRecord(username, name, email, whatsapp) {
   return {
@@ -250,6 +265,10 @@ if (!Array.isArray(state.products) || state.products.length === 0) {
 }
 state.products.forEach(p => {
   if (!Array.isArray(p.credentials)) p.credentials = [];
+  const parsed = parseCategoryOption(p.category || p.icon);
+  p.icon = parsed.icon;
+  p.category = parsed.category;
+  p.isVpn = parsed.category === 'VPNs';
 });
 
 function getCurrentUser() {
@@ -487,7 +506,7 @@ function saveProduct() {
   const name = document.getElementById('prodName').value.trim();
   const desc = document.getElementById('prodDesc').value.trim() || 'Fast delivery • Trusted service';
   const price = parseInt(document.getElementById('prodPrice').value);
-  const icon = document.getElementById('prodIcon').value;
+  const parsedCat = parseCategoryOption(document.getElementById('prodIcon').value);
   const credentials = parseCredentialLines(document.getElementById('prodCredentials').value);
 
   if (!name || isNaN(price) || price <= 0) {
@@ -501,12 +520,14 @@ function saveProduct() {
       state.products[idx].name = name;
       state.products[idx].desc = desc;
       state.products[idx].price = price;
-      state.products[idx].icon = icon;
+      state.products[idx].icon = parsedCat.icon;
+      state.products[idx].category = parsedCat.category;
+      state.products[idx].isVpn = parsedCat.category === 'VPNs';
       state.products[idx].credentials = credentials;
       if (state.products[idx].isVpn) {
         state.vpnPrice = price;
       }
-      state.adminLogs.unshift(`✏️ Updated Product: ${name} (₦${price.toLocaleString()} | Stock: ${credentials.length})`);
+      state.adminLogs.unshift(`✏️ Updated Product: ${name} [${parsedCat.category}] (₦${price.toLocaleString()} | Stock: ${credentials.length})`);
     }
     resetProductForm();
     saveState();
@@ -517,12 +538,13 @@ function saveProduct() {
       name,
       desc,
       price,
-      icon,
-      isVpn: false,
+      icon: parsedCat.icon,
+      category: parsedCat.category,
+      isVpn: parsedCat.category === 'VPNs',
       credentials
     };
     state.products.push(newProd);
-    state.adminLogs.unshift(`➕ Created Product: ${name} (₦${price.toLocaleString()} | Stock: ${credentials.length})`);
+    state.adminLogs.unshift(`➕ Created Product: ${name} [${parsedCat.category}] (₦${price.toLocaleString()} | Stock: ${credentials.length})`);
     resetProductForm();
     saveState();
     alert(`Added "${name}" to Our Services!`);
@@ -533,12 +555,13 @@ function startEditProduct(id) {
   const item = state.products.find(p => p.id === id);
   if (!item) return;
   const effectivePrice = item.isVpn ? state.vpnPrice : item.price;
+  const parsedCat = parseCategoryOption(item.category || item.icon);
 
   document.getElementById('editProductId').value = item.id;
   document.getElementById('prodName').value = item.name;
   document.getElementById('prodDesc').value = item.desc;
   document.getElementById('prodPrice').value = effectivePrice;
-  document.getElementById('prodIcon').value = item.icon || '⭐';
+  document.getElementById('prodIcon').value = parsedCat.key;
   document.getElementById('prodCredentials').value = Array.isArray(item.credentials) ? item.credentials.join('\n') : '';
   document.getElementById('productFormTitle').innerText = 'Edit Product';
   document.getElementById('saveProductBtn').innerText = 'Save Changes';
@@ -564,7 +587,7 @@ function resetProductForm() {
   document.getElementById('prodName').value = '';
   document.getElementById('prodDesc').value = '';
   document.getElementById('prodPrice').value = '';
-  document.getElementById('prodIcon').value = '🛡️';
+  document.getElementById('prodIcon').value = CATEGORIES[0].key;
   document.getElementById('prodCredentials').value = '';
   document.getElementById('productFormTitle').innerText = 'Create New Product';
   document.getElementById('saveProductBtn').innerText = 'Add Product';
@@ -578,7 +601,7 @@ function updateStoreSettings() {
   if (newVpnPrice > 0) {
     state.vpnPrice = newVpnPrice;
     state.products.forEach(p => {
-      if (p.isVpn) p.price = newVpnPrice;
+      if (p.isVpn || p.category === 'VPNs') p.price = newVpnPrice;
     });
   }
   if (newFee >= 0) state.serviceFee = newFee;
@@ -595,6 +618,7 @@ function renderServices() {
   }
 
   container.innerHTML = state.products.map(p => {
+    const parsedCat = parseCategoryOption(p.category || p.icon);
     const displayPrice = p.isVpn ? state.vpnPrice : p.price;
     const creds = Array.isArray(p.credentials) ? p.credentials : [];
     const hasStockPool = creds.length > 0 || p.isVpn;
@@ -611,8 +635,9 @@ function renderServices() {
     return `
       <div class="card">
         <div class="card-left">
-          <div class="icon">${escapeHtml(p.icon || '⭐')}</div>
+          <div class="icon">${escapeHtml(parsedCat.icon)}</div>
           <div>
+            <span class="cat-tag">${escapeHtml(parsedCat.category)}</span>
             <h3>${escapeHtml(p.name)} ${stockLabel}</h3>
             <p>${escapeHtml(p.desc)}</p>
             <button class="buy-btn" ${isSoldOut ? 'disabled' : ''} onclick="buyById('${escapeHtml(p.id)}')">${isSoldOut ? 'Out of Stock' : 'Buy Now'}</button>
@@ -632,13 +657,14 @@ function renderAdminProducts() {
   }
 
   container.innerHTML = state.products.map(p => {
+    const parsedCat = parseCategoryOption(p.category || p.icon);
     const displayPrice = p.isVpn ? state.vpnPrice : p.price;
     const stockCount = Array.isArray(p.credentials) ? p.credentials.length : 0;
     return `
       <div class="prod-admin-row">
         <div>
-          <b>${escapeHtml(p.icon || '⭐')} ${escapeHtml(p.name)}</b> — ₦${displayPrice.toLocaleString()} <b>(${stockCount} logins in stock)</b><br>
-          <small style="color:#666">${escapeHtml(p.desc)}</small>
+          <b>${escapeHtml(parsedCat.icon)} ${escapeHtml(p.name)}</b> — ₦${displayPrice.toLocaleString()} <b>(${stockCount} logins in stock)</b><br>
+          <small style="color:#666">${escapeHtml(parsedCat.category)} • ${escapeHtml(p.desc)}</small>
         </div>
         <div class="prod-admin-actions">
           <button class="btn-sm btn-secondary" onclick="startEditProduct('${escapeHtml(p.id)}')">Edit</button>
