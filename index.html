@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NX Socials - nxsocials.name.ng</title>
+<!-- Official Paystack Inline Script -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f4f6fb;color:#0a1e3f}
+header{background:white;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.08);position:sticky;top:0;z-index:10}
+.logo-img{height:42px;width:auto}
+.logo-text{font-weight:900;font-size:24px;line-height:1}
+.logo-text .nx{color:#0b5ed7}.logo-text .soc{color:#ff3b1f}
+.logo-text small{display:block;font-size:9px;letter-spacing:3px;color:#0a1e3f;font-weight:700}
+nav a{color:#0a1e3f;text-decoration:none;margin-left:12px;font-size:14px;font-weight:bold}
+.hero{background:#0a2a6b;color:white;padding:36px 20px 30px;text-align:center;border-radius:0 0 24px 24px}
+.hero h1{font-size:32px;line-height:1.1}.hero p{margin:14px 0;opacity:.9;font-size:14px}
+.btn{background:#ff6b1a;color:white;padding:13px 22px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{opacity:.95}
+.btn-sm{padding:8px 12px;font-size:12px;border-radius:8px;border:none;cursor:pointer;font-weight:bold}
+.btn-danger{background:#dc3545;color:white}
+.btn-secondary{background:#0a2a6b;color:white}
+.card{background:white;margin:14px;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.07);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.card-left{display:flex;gap:12px;align-items:flex-start}
+.icon{width:48px;height:48px;border-radius:12px;background:#eaf2ff;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.card h3{font-size:17px;margin-bottom:4px}.card p{font-size:13px;color:#666}
+.price{font-size:20px;font-weight:900;color:#ff6b1a;white-space:nowrap}
+.buy-btn{background:#ff6b1a;color:white;border:none;padding:9px 14px;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:8px}
+.section{padding:8px 4px}
+.section h2{padding:14px 15px 4px;font-size:24px}
+input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;background:white;color:#0a1e3f}
+.hidden{display:none}
+.wallet{background:#0a2a6b;color:white;border-radius:16px;padding:20px;margin:15px}
+.wallet h2{font-size:36px;margin:8px 0}
+.vacc{background:#fff3e8;border:1px dashed #ff6b1a;border-radius:12px;padding:14px;color:#0a1e3f;margin-top:12px;font-size:13px;line-height:1.5}
+.fee-box{background:#fff3e8;border-radius:12px;padding:12px;color:#0a1e3f;margin-top:12px;font-size:14px}
+.trust{background:#eaf2ff;border:1px solid #cfe0ff;border-radius:10px;padding:12px;margin:15px;font-size:13px;text-align:center}
+.admin-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 10px}
+.stat{background:#0a2a6b;color:white;padding:15px;border-radius:12px}.stat b{font-size:22px}
+.tx-item{padding:10px 0;border-bottom:1px solid #eee;font-size:13px}
+.prod-admin-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}
+.prod-admin-actions{display:flex;gap:6px;flex-shrink:0}
+footer{text-align:center;padding:20px;font-size:13px;color:#888}
+.hero-logo{height:56px;background:white;padding:6px 12px;border-radius:12px;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="NX Socials" class="logo-img" onerror="this.style.display='none';document.getElementById('fallbackLogo').style.display='block'">
+  <div id="fallbackLogo" style="display:none" class="logo-text"><span class="nx">NX</span><span class="soc">SOCIALS</span><small>.NAME.NG</small></div>
+  <nav>
+    <a href="#" onclick="show('home')">Home</a>
+    <a href="#" onclick="show('wallet')">Wallet</a>
+    <a href="#" onclick="show('adminLogin')">Admin</a>
+  </nav>
+</header>
+
+<!-- HOME -->
+<div id="home">
+  <div class="hero">
+    <img src="logo.png" class="hero-logo" onerror="this.style.display='none'">
+    <h1>Buy VPN &<br>Social Growth</h1>
+    <p>Fast delivery • Trusted • Instant Payment via Paystack</p>
+    <button class="btn" onclick="show('wallet')">Create Account & Fund Wallet</button>
+  </div>
+
+  <div class="section">
+    <h2>Our Services</h2>
+    <div id="servicesList"></div>
+
+    <div class="trust">🛡️ All payments secured by Paystack (Bank Transfer, Card & USSD) • 24/7 support</div>
+    <p style="text-align:center;font-size:13px;color:#888">nxsocials.name.ng • Trusted by 5,000+ customers</p>
+  </div>
+</div>
+
+<!-- WALLET -->
+<div id="wallet" class="hidden">
+  <div class="section">
+    <div class="card" style="display:block">
+      <h2>Customer Details</h2>
+      <p style="margin-bottom:8px">Required before funding wallet or placing an order.</p>
+      <input id="userName" placeholder="Your Full Name e.g. Chidera">
+      <input id="userEmail" type="email" placeholder="Valid Email Address e.g. chidera@gmail.com">
+      <input id="userWhatsapp" type="tel" placeholder="WhatsApp Number for Order Delivery">
+      <button class="btn" onclick="saveProfile()">Save Details</button>
+    </div>
+
+    <div class="wallet">
+      <p>My Wallet Balance</p>
+      <h2>₦<span id="balance">0</span></h2>
+      <div class="fee-box">
+        <b>Fund Wallet via Paystack:</b><br>
+        ₦<span id="feeDisplay">30</span> service fee per deposit.<br><br>
+        <input id="depositAmount" type="number" placeholder="Enter amount e.g. 5000" value="5000" oninput="updateFeePreview()">
+        <button class="btn" onclick="payWithPaystack()">Pay Now with Paystack</button>
+        <p style="margin-top:8px" id="feePreview">Example: Deposit ₦5,000 → Fee ₦30 → You receive <b>₦4,970</b></p>
+      </div>
+      <div class="vacc">
+        <b>How Payment Works:</b><br>
+        Click <b>Pay Now with Paystack</b> above to pay securely via <b>Instant Bank Transfer, Card, or USSD</b>. Your wallet updates immediately after payment confirmation.
+      </div>
+    </div>
+
+    <div class="card" style="display:block">
+      <h3>Transaction History</h3>
+      <div id="history" style="margin-top:8px">No transactions yet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="adminLogin" class="hidden">
+  <div class="section">
+    <div class="card" style="display:block">
+      <h2>Admin Login</h2>
+      <input id="adminPass" type="password" placeholder="Enter Admin Password">
+      <button class="btn" onclick="loginAdmin()">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="hidden">
+  <div class="section">
+    <h2>Admin Dashboard - NX Socials</h2>
+    <div class="admin-top">
+      <div class="stat">Registered Users<br><b id="totalUsers">0</b></div>
+      <div class="stat">Total Orders<br><b id="totalOrders">0</b></div>
+      <div class="stat">Total Revenue<br><b>₦<span id="totalRev">0</span></b></div>
+      <div class="stat" style="background:#ff6b1a">Service Fees Earned<br><b>₦<span id="totalFees">0</span></b></div>
+      <div class="stat">Total Deposits<br><b id="totalDeposits">0</b></div>
+    </div>
+
+    <div class="card" style="display:block">
+      <h3 id="productFormTitle">Create New Product</h3>
+      <input type="hidden" id="editProductId">
+      <input id="prodName" placeholder="Product Name e.g. Telegram Members">
+      <input id="prodDesc" placeholder="Short Description e.g. Fast delivery • Real profiles">
+      <input id="prodPrice" type="number" placeholder="Price in Naira (₦) e.g. 8000">
+      <select id="prodIcon">
+        <option value="🛡️">🛡️ Shield / VPN</option>
+        <option value="📸">📸 Instagram / Photo</option>
+        <option value="📢">📢 Ads / Megaphone</option>
+        <option value="🎬">🎬 TikTok / Video</option>
+        <option value="🚀">🚀 Growth / Rocket</option>
+        <option value="⭐">⭐ Featured / Star</option>
+      </select>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+        <button class="btn" id="saveProductBtn" onclick="saveProduct()">Add Product</button>
+        <button class="btn btn-secondary hidden" id="cancelEditBtn" onclick="resetProductForm()">Cancel Edit</button>
+      </div>
+    </div>
+
+    <div class="card" style="display:block">
+      <h3>Manage Products</h3>
+      <div id="adminProductsList" style="margin-top:8px">No products yet.</div>
+    </div>
+
+    <div class="card" style="display:block">
+      <h3>Store Pricing & Fees</h3>
+      <p style="margin-top:8px">VPN 1 Month Price (₦): <input id="vpnPriceInput" type="number" value="6000"></p>
+      <p>Deposit Service Fee (₦): <input id="serviceFeeInput" type="number" value="30"></p>
+      <button class="btn" onclick="updateStoreSettings()">Save Prices & Fee</button>
+    </div>
+
+    <div class="card" style="display:block">
+      <h3>Customer & Order Logs</h3>
+      <div id="userList" style="margin-top:8px">No activity yet.</div>
+    </div>
+  </div>
+</div>
+
+<footer>NX Socials • nxsocials.name.ng • © 2026</footer>
+
+<script>
+// ==========================================
+// CONFIGURATION (UPDATE BEFORE GOING LIVE)
+// ==========================================
+const PAYSTACK_PUBLIC_KEY = 'pk_test_2fd1d0be93e6366a495246fcab17d7a02eb3ab92';
+const ADMIN_PASSWORD = 'Nzeribe70@';
+const STORAGE_KEY = 'nxsocials_store_v2';
+
+const DEFAULT_PRODUCTS = [
+  { id: 'vpn_1m', name: 'Premium VPN 1 Month', desc: 'Fast, secure & private connection • Unlimited data', price: 6000, icon: '🛡️', isVpn: true },
+  { id: 'ig_growth', name: 'Instagram Growth Service', desc: 'Followers, Likes & Views • Organic growth', price: 15000, icon: '📸', isVpn: false },
+  { id: 'ads_setup', name: 'Ads Setup - TikTok / Meta', desc: 'Setup & Management • Targeted campaigns', price: 10000, icon: '📢', isVpn: false },
+  { id: 'tt_growth', name: 'TikTok Growth Service', desc: 'Views, Followers & Engagement • Fast delivery', price: 25000, icon: '🎬', isVpn: false }
+];
+
+// Load saved state from localStorage or initialize defaults
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+  user: null,
+  balance: 0,
+  orders: 0,
+  revenue: 0,
+  totalFees: 0,
+  totalDeposits: 0,
+  serviceFee: 30,
+  vpnPrice: 6000,
+  products: DEFAULT_PRODUCTS.map(p => ({ ...p })),
+  history: [],
+  adminLogs: []
+};
+
+if (!Array.isArray(state.products) || state.products.length === 0) {
+  state.products = DEFAULT_PRODUCTS.map(p => ({ ...p }));
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  renderUI();
+}
+
+function show(id) {
+  ['home', 'wallet', 'adminLogin', 'admin'].forEach(x => {
+    document.getElementById(x).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function saveProfile() {
+  const name = document.getElementById('userName').value.trim();
+  const email = document.getElementById('userEmail').value.trim();
+  const whatsapp = document.getElementById('userWhatsapp').value.trim();
+
+  if (!name || !isValidEmail(email) || !whatsapp) {
+    alert('Please enter your Name, a valid Email address, and your WhatsApp number.');
+    return;
+  }
+
+  const isNewUser = !state.user;
+  state.user = { name, email, whatsapp };
+  if (isNewUser) {
+    state.adminLogs.unshift(`👤 New Customer: ${name} (${email} | WA: ${whatsapp})`);
+  }
+  saveState();
+  alert(`Details saved for ${name}! You can now fund your wallet via Paystack.`);
+}
+
+function updateFeePreview() {
+  const amt = parseInt(document.getElementById('depositAmount').value) || 0;
+  const net = Math.max(0, amt - state.serviceFee);
+  document.getElementById('feePreview').innerHTML =
+    `Deposit ₦${amt.toLocaleString()} → Fee ₦${state.serviceFee.toLocaleString()} → You receive <b>₦${net.toLocaleString()}</b>`;
+}
+
+function payWithPaystack() {
+  if (!state.user || !isValidEmail(state.user.email)) {
+    alert('Please enter and save your Name, Email, and WhatsApp number above first.');
+    return;
+  }
+
+  if (PAYSTACK_PUBLIC_KEY.includes('REPLACE_WITH')) {
+    alert('Paystack Public Key not set yet. Add your pk_test_ or pk_live_ key in the code first.');
+    return;
+  }
+
+  const depositAmount = parseInt(document.getElementById('depositAmount').value) || 0;
+  if (depositAmount <= state.serviceFee) {
+    alert(`Deposit amount must be greater than the ₦${state.serviceFee} service fee.`);
+    return;
+  }
+
+  const handler = PaystackPop.setup({
+    key: PAYSTACK_PUBLIC_KEY,
+    email: state.user.email,
+    amount: depositAmount * 100, // Paystack requires amount in Kobo
+    currency: 'NGN',
+    ref: 'NXS_' + Math.floor((Math.random() * 1000000000) + 1),
+    metadata: {
+      custom_fields: [
+        { display_name: 'Customer Name', variable_name: 'customer_name', value: state.user.name },
+        { display_name: 'WhatsApp', variable_name: 'whatsapp', value: state.user.whatsapp }
+      ]
+    },
+    callback: function(response) {
+      const creditAmount = depositAmount - state.serviceFee;
+      state.balance += creditAmount;
+      state.totalFees += state.serviceFee;
+      state.totalDeposits += 1;
+
+      const time = new Date().toLocaleString();
+      state.history.unshift(`✅ [${time}] Deposited ₦${depositAmount.toLocaleString()} (Fee: ₦${state.serviceFee}) → Credited ₦${creditAmount.toLocaleString()} | Ref: ${response.reference}`);
+      state.adminLogs.unshift(`💰 Deposit: ₦${depositAmount.toLocaleString()} by ${state.user.name} (Ref: ${response.reference})`);
+      saveState();
+
+      alert(`Payment successful! Ref: ${response.reference}\n₦${creditAmount.toLocaleString()} has been added to your wallet.`);
+    },
+    onClose: function() {
+      alert('Payment window closed.');
+    }
+  });
+
+  handler.openIframe();
+}
+
+function buyById(productId) {
+  const item = state.products.find(p => p.id === productId);
+  if (!item) return;
+  const price = item.isVpn ? state.vpnPrice : item.price;
+  buy(item.name, price);
+}
+
+function buy(product, price) {
+  if (!state.user) {
+    alert('Please enter your customer details and fund your wallet first.');
+    show('wallet');
+    return;
+  }
+
+  if (state.balance < price) {
+    alert(`Insufficient balance (₦${state.balance.toLocaleString()}). You need ₦${price.toLocaleString()}. Please fund your wallet first.`);
+    show('wallet');
+    return;
+  }
+
+  state.balance -= price;
+  state.orders += 1;
+  state.revenue += price;
+
+  const time = new Date().toLocaleString();
+  state.history.unshift(`🛒 [${time}] Ordered ${product} (-₦${price.toLocaleString()})`);
+  state.adminLogs.unshift(`📦 Order: ${product} (₦${price.toLocaleString()}) by ${state.user.name} | WA: ${state.user.whatsapp}`);
+  saveState();
+
+  alert(`Order confirmed for ${product}! We will deliver to your WhatsApp (${state.user.whatsapp}) shortly.`);
+}
+
+function loginAdmin() {
+  const entered = document.getElementById('adminPass').value;
+  if (entered === ADMIN_PASSWORD) {
+    document.getElementById('adminPass').value = '';
+    show('admin');
+  } else {
+    alert('Wrong admin password.');
+  }
+}
+
+function saveProduct() {
+  const editId = document.getElementById('editProductId').value.trim();
+  const name = document.getElementById('prodName').value.trim();
+  const desc = document.getElementById('prodDesc').value.trim() || 'Fast delivery • Trusted service';
+  const price = parseInt(document.getElementById('prodPrice').value);
+  const icon = document.getElementById('prodIcon').value;
+
+  if (!name || isNaN(price) || price <= 0) {
+    alert('Please enter a valid product name and a price greater than ₦0.');
+    return;
+  }
+
+  if (editId) {
+    const idx = state.products.findIndex(p => p.id === editId);
+    if (idx !== -1) {
+      state.products[idx].name = name;
+      state.products[idx].desc = desc;
+      state.products[idx].price = price;
+      state.products[idx].icon = icon;
+      if (state.products[idx].isVpn) {
+        state.vpnPrice = price;
+      }
+      state.adminLogs.unshift(`✏️ Updated Product: ${name} (₦${price.toLocaleString()})`);
+    }
+    resetProductForm();
+    saveState();
+    alert(`Updated "${name}"!`);
+  } else {
+    const newProd = {
+      id: 'prod_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      name,
+      desc,
+      price,
+      icon,
+      isVpn: false
+    };
+    state.products.push(newProd);
+    state.adminLogs.unshift(`➕ Created Product: ${name} (₦${price.toLocaleString()})`);
+    resetProductForm();
+    saveState();
+    alert(`Added "${name}" to Our Services!`);
+  }
+}
+
+function startEditProduct(id) {
+  const item = state.products.find(p => p.id === id);
+  if (!item) return;
+  const effectivePrice = item.isVpn ? state.vpnPrice : item.price;
+
+  document.getElementById('editProductId').value = item.id;
+  document.getElementById('prodName').value = item.name;
+  document.getElementById('prodDesc').value = item.desc;
+  document.getElementById('prodPrice').value = effectivePrice;
+  document.getElementById('prodIcon').value = item.icon || '⭐';
+  document.getElementById('productFormTitle').innerText = 'Edit Product';
+  document.getElementById('saveProductBtn').innerText = 'Save Changes';
+  document.getElementById('cancelEditBtn').classList.remove('hidden');
+  document.getElementById('productFormTitle').scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteProduct(id) {
+  const item = state.products.find(p => p.id === id);
+  if (!item) return;
+  if (!confirm(`Delete "${item.name}" from your store?`)) return;
+
+  if (document.getElementById('editProductId').value === id) {
+    resetProductForm();
+  }
+  state.products = state.products.filter(p => p.id !== id);
+  state.adminLogs.unshift(`🗑️ Deleted Product: ${item.name}`);
+  saveState();
+}
+
+function resetProductForm() {
+  document.getElementById('editProductId').value = '';
+  document.getElementById('prodName').value = '';
+  document.getElementById('prodDesc').value = '';
+  document.getElementById('prodPrice').value = '';
+  document.getElementById('prodIcon').value = '🛡️';
+  document.getElementById('productFormTitle').innerText = 'Create New Product';
+  document.getElementById('saveProductBtn').innerText = 'Add Product';
+  document.getElementById('cancelEditBtn').classList.add('hidden');
+}
+
+function updateStoreSettings() {
+  const newVpnPrice = parseInt(document.getElementById('vpnPriceInput').value);
+  const newFee = parseInt(document.getElementById('serviceFeeInput').value);
+
+  if (newVpnPrice > 0) {
+    state.vpnPrice = newVpnPrice;
+    state.products.forEach(p => {
+      if (p.isVpn) p.price = newVpnPrice;
+    });
+  }
+  if (newFee >= 0) state.serviceFee = newFee;
+
+  saveState();
+  alert(`Updated! VPN Price: ₦${state.vpnPrice.toLocaleString()} | Service Fee: ₦${state.serviceFee.toLocaleString()}`);
+}
+
+function renderServices() {
+  const container = document.getElementById('servicesList');
+  if (!state.products.length) {
+    container.innerHTML = '<div class="card"><p>No services available right now.</p></div>';
+    return;
+  }
+
+  container.innerHTML = state.products.map(p => {
+    const displayPrice = p.isVpn ? state.vpnPrice : p.price;
+    return `
+      <div class="card">
+        <div class="card-left">
+          <div class="icon">${escapeHtml(p.icon || '⭐')}</div>
+          <div>
+            <h3>${escapeHtml(p.name)}</h3>
+            <p>${escapeHtml(p.desc)}</p>
+            <button class="buy-btn" onclick="buyById('${escapeHtml(p.id)}')">Buy Now</button>
+          </div>
+        </div>
+        <div class="price">₦${displayPrice.toLocaleString()}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAdminProducts() {
+  const container = document.getElementById('adminProductsList');
+  if (!state.products.length) {
+    container.innerHTML = 'No products yet. Use "Create New Product" above to add one.';
+    return;
+  }
+
+  container.innerHTML = state.products.map(p => {
+    const displayPrice = p.isVpn ? state.vpnPrice : p.price;
+    return `
+      <div class="prod-admin-row">
+        <div>
+          <b>${escapeHtml(p.icon || '⭐')} ${escapeHtml(p.name)}</b> — <b>₦${displayPrice.toLocaleString()}</b><br>
+          <small style="color:#666">${escapeHtml(p.desc)}</small>
+        </div>
+        <div class="prod-admin-actions">
+          <button class="btn-sm btn-secondary" onclick="startEditProduct('${escapeHtml(p.id)}')">Edit</button>
+          <button class="btn-sm btn-danger" onclick="deleteProduct('${escapeHtml(p.id)}')">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderUI() {
+  // Prefill user fields if saved
+  if (state.user) {
+    document.getElementById('userName').value = state.user.name;
+    document.getElementById('userEmail').value = state.user.email;
+    document.getElementById('userWhatsapp').value = state.user.whatsapp;
+  }
+
+  // Balances & Prices
+  document.getElementById('balance').innerText = state.balance.toLocaleString();
+  document.getElementById('feeDisplay').innerText = state.serviceFee.toLocaleString();
+  document.getElementById('vpnPriceInput').value = state.vpnPrice;
+  document.getElementById('serviceFeeInput').value = state.serviceFee;
+
+  // Services & Admin Product Manager
+  renderServices();
+  renderAdminProducts();
+
+  // Admin Stats
+  document.getElementById('totalUsers').innerText = state.user ? 1 : 0;
+  document.getElementById('totalOrders').innerText = state.orders;
+  document.getElementById('totalRev').innerText = state.revenue.toLocaleString();
+  document.getElementById('totalFees').innerText = state.totalFees.toLocaleString();
+  document.getElementById('totalDeposits').innerText = state.totalDeposits;
+
+  // Logs & History
+  document.getElementById('history').innerHTML = state.history.length
+    ? state.history.map(item => `<div class="tx-item">${escapeHtml(item)}</div>`).join('')
+    : 'No transactions yet.';
+
+  document.getElementById('userList').innerHTML = state.adminLogs.length
+    ? state.adminLogs.map(log => `<div class="tx-item">${escapeHtml(log)}</div>`).join('')
+    : 'No activity yet.';
+
+  updateFeePreview();
+}
+
+// Initialize UI on page load
+renderUI();
+</script>
+</body>
+</html>
