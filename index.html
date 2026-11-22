@@ -8,48 +8,52 @@
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f4f6fb;color:#0a1e3f}
-header{background:white;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.08);position:sticky;top:0;z-index:10}
+body{background:#090d16;color:#f3f6fc}
+header{background:#05080f;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 12px rgba(0,0,0,.45);border-bottom:1px solid #1b2842;position:sticky;top:0;z-index:10}
 .logo-img{height:42px;width:auto}
 .logo-text{font-weight:900;font-size:24px;line-height:1}
-.logo-text .nx{color:#0b5ed7}.logo-text .soc{color:#ff3b1f}
-.logo-text small{display:block;font-size:9px;letter-spacing:3px;color:#0a1e3f;font-weight:700}
-nav a{color:#0a1e3f;text-decoration:none;margin-left:12px;font-size:14px;font-weight:bold}
-.hero{background:#0a2a6b;color:white;padding:36px 20px 30px;text-align:center;border-radius:0 0 24px 24px}
-.hero h1{font-size:32px;line-height:1.1}.hero p{margin:14px 0;opacity:.9;font-size:14px}
+.logo-text .nx{color:#3b82f6}.logo-text .soc{color:#ff6b1a}
+.logo-text small{display:block;font-size:9px;letter-spacing:3px;color:#cbd5e1;font-weight:700}
+nav a{color:#e2e8f0;text-decoration:none;margin-left:12px;font-size:14px;font-weight:bold}
+nav a:hover{color:#ff6b1a}
+.hero{background:linear-gradient(160deg,#05080f 0%,#0b1d45 58%,#133885 100%);color:white;padding:36px 20px 30px;text-align:center;border-radius:0 0 24px 24px;border-bottom:2px solid #ff6b1a}
+.hero h1{font-size:32px;line-height:1.1}.hero p{margin:14px 0;color:#cbd5e1;font-size:14px}
 .btn{background:#ff6b1a;color:white;padding:13px 22px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
-.btn:hover{opacity:.95}
+.btn:hover{background:#ea580c}
 .btn-sm{padding:8px 12px;font-size:12px;border-radius:8px;border:none;cursor:pointer;font-weight:bold}
-.btn-danger{background:#dc3545;color:white}
-.btn-secondary{background:#0a2a6b;color:white}
-.card{background:white;margin:14px;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.07);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.btn-danger{background:#dc2626;color:white}
+.btn-secondary{background:#0b1d45;color:#f8fafc;border:1px solid #2563eb}
+.card{background:#101726;margin:14px;border-radius:16px;padding:18px;box-shadow:0 6px 20px rgba(0,0,0,.35);border:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .card-left{display:flex;gap:12px;align-items:flex-start}
-.icon{width:48px;height:48px;border-radius:12px;background:#eaf2ff;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-.card h3{font-size:17px;margin-bottom:4px}.card p{font-size:13px;color:#666}
-.cat-tag{display:inline-block;font-size:11px;font-weight:700;color:#0a2a6b;background:#eaf2ff;padding:2px 8px;border-radius:999px;margin-bottom:6px}
-.stock-badge{color:#0b5ed7;font-weight:700;margin-left:4px}
-.out-badge{color:#dc3545;font-weight:700;margin-left:4px}
+.icon{width:48px;height:48px;border-radius:12px;background:#0b1d45;border:1px solid #2563eb;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.card h3{font-size:17px;margin-bottom:4px;color:#ffffff}.card p{font-size:13px;color:#94a3b8}
+.cat-tag{display:inline-block;font-size:11px;font-weight:700;color:#ff9d66;background:#1c110a;border:1px solid #ff6b1a;padding:2px 8px;border-radius:999px;margin-bottom:6px}
+.stock-badge{color:#60a5fa;font-weight:700;margin-left:4px}
+.out-badge{color:#f87171;font-weight:700;margin-left:4px}
 .price{font-size:20px;font-weight:900;color:#ff6b1a;white-space:nowrap}
 .buy-btn{background:#ff6b1a;color:white;border:none;padding:9px 14px;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:8px}
-.buy-btn:disabled{background:#b8c2d1;cursor:not-allowed}
+.buy-btn:hover{background:#ea580c}
+.buy-btn:disabled{background:#334155;color:#94a3b8;cursor:not-allowed}
 .section{padding:8px 4px}
-.section h2{padding:14px 15px 4px;font-size:24px}
-input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;background:white;color:#0a1e3f}
+.section h2{padding:14px 15px 4px;font-size:24px;color:#ffffff}
+.card h2,.card h3{padding:0}
+input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #26354f;border-radius:10px;background:#070b14;color:#f8fafc}
+input::placeholder,textarea::placeholder{color:#64748b}
 textarea{min-height:110px;resize:vertical;font-family:monospace;font-size:13px}
 .hidden{display:none}
-.wallet{background:#0a2a6b;color:white;border-radius:16px;padding:20px;margin:15px}
-.wallet h2{font-size:36px;margin:8px 0}
-.vacc{background:#fff3e8;border:1px dashed #ff6b1a;border-radius:12px;padding:14px;color:#0a1e3f;margin-top:12px;font-size:13px;line-height:1.5}
-.fee-box{background:#fff3e8;border-radius:12px;padding:12px;color:#0a1e3f;margin-top:12px;font-size:14px}
-.trust{background:#eaf2ff;border:1px solid #cfe0ff;border-radius:10px;padding:12px;margin:15px;font-size:13px;text-align:center}
-.admin-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 10px}
-.stat{background:#0a2a6b;color:white;padding:15px;border-radius:12px}.stat b{font-size:22px}
-.tx-item{padding:10px 0;border-bottom:1px solid #eee;font-size:13px}
-.cred-box{background:#f4f6fb;border:1px solid #d5dfef;border-radius:10px;padding:10px;margin-top:8px;font-family:monospace;font-size:13px;color:#0a1e3f;word-break:break-all}
-.active-user-bar{background:#eaf2ff;border:1px solid #cfe0ff;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.prod-admin-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}
+.wallet{background:linear-gradient(150deg,#05080f 0%,#0b1d45 100%);color:white;border-radius:16px;padding:20px;margin:15px;border:1px solid #2563eb}
+.wallet h2{font-size:36px;margin:8px 0;padding:0;color:#ffffff}
+.vacc{background:#070b14;border:1px dashed #ff6b1a;border-radius:12px;padding:14px;color:#cbd5e1;margin-top:12px;font-size:13px;line-height:1.5}
+.fee-box{background:#0b1528;border:1px solid #2563eb;border-radius:12px;padding:12px;color:#e2e8f0;margin-top:12px;font-size:14px}
+.trust{background:#0b1d45;border:1px solid #2563eb;border-radius:10px;padding:12px;margin:15px;font-size:13px;text-align:center;color:#dbeafe}
+.admin-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px}
+.stat{background:#0b1d45;border:1px solid #2563eb;color:white;padding:15px;border-radius:12px}.stat b{font-size:22px;color:#ff9d66}
+.tx-item{padding:10px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#e2e8f0}
+.cred-box{background:#070b14;border:1px solid #ff6b1a;border-radius:10px;padding:10px;margin-top:8px;font-family:monospace;font-size:13px;color:#ff9d66;word-break:break-all}
+.active-user-bar{background:#0b1d45;border:1px solid #2563eb;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;color:#eff6ff;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.prod-admin-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1e293b}
 .prod-admin-actions{display:flex;gap:6px;flex-shrink:0}
-footer{text-align:center;padding:20px;font-size:13px;color:#888}
+footer{text-align:center;padding:20px;font-size:13px;color:#64748b}
 .hero-logo{height:56px;background:white;padding:6px 12px;border-radius:12px;margin-bottom:14px}
 </style>
 </head>
@@ -79,7 +83,7 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
     <div id="servicesList"></div>
 
     <div class="trust">🛡️ All payments secured by Paystack (Bank Transfer, Card & USSD) • 24/7 support</div>
-    <p style="text-align:center;font-size:13px;color:#888">nxsocials.name.ng • Trusted by 5,000+ customers</p>
+    <p style="text-align:center;font-size:13px;color:#64748b">nxsocials.name.ng • Trusted by 5,000+ customers</p>
   </div>
 </div>
 
@@ -152,7 +156,7 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
       <div class="stat">Registered Users<br><b id="totalUsers">0</b></div>
       <div class="stat">Total Orders<br><b id="totalOrders">0</b></div>
       <div class="stat">Total Revenue<br><b>₦<span id="totalRev">0</span></b></div>
-      <div class="stat" style="background:#ff6b1a">Service Fees Earned<br><b>₦<span id="totalFees">0</span></b></div>
+      <div class="stat" style="background:#ff6b1a">Service Fees Earned<br><b style="color:#ffffff">₦<span id="totalFees">0</span></b></div>
       <div class="stat">Total Deposits<br><b id="totalDeposits">0</b></div>
     </div>
 
@@ -169,7 +173,7 @@ footer{text-align:center;padding:20px;font-size:13px;color:#888}
         <option value="🛡️|VPNs">🛡️ VPNs</option>
         <option value="📺|TV access">📺 TV access</option>
       </select>
-      <label style="display:block;font-size:13px;font-weight:bold;margin-top:8px">
+      <label style="display:block;font-size:13px;font-weight:bold;margin-top:8px;color:#e2e8f0">
         Account Logins Stock Pool (1 login per line — leave empty for non-credential services)
       </label>
       <textarea id="prodCredentials" placeholder="Paste one login per line, e.g.:&#10;hma_user1@mail.com:Pass123!&#10;hma_user2@mail.com:Pass456!"></textarea>
@@ -664,7 +668,7 @@ function renderAdminProducts() {
       <div class="prod-admin-row">
         <div>
           <b>${escapeHtml(parsedCat.icon)} ${escapeHtml(p.name)}</b> — ₦${displayPrice.toLocaleString()} <b>(${stockCount} logins in stock)</b><br>
-          <small style="color:#666">${escapeHtml(parsedCat.category)} • ${escapeHtml(p.desc)}</small>
+          <small style="color:#94a3b8">${escapeHtml(parsedCat.category)} • ${escapeHtml(p.desc)}</small>
         </div>
         <div class="prod-admin-actions">
           <button class="btn-sm btn-secondary" onclick="startEditProduct('${escapeHtml(p.id)}')">Edit</button>
@@ -707,7 +711,7 @@ function renderUI() {
   } else {
     loginsEl.innerHTML = user.deliveredLogins.map(item => `
       <div class="tx-item">
-        <b>${escapeHtml(item.productName)}</b> <span style="color:#666">(${escapeHtml(item.time)})</span>
+        <b>${escapeHtml(item.productName)}</b> <span style="color:#94a3b8">(${escapeHtml(item.time)})</span>
         <div class="cred-box">${escapeHtml(item.credential)}</div>
       </div>
     `).join('');
