@@ -14,7 +14,7 @@ header{background:#05080f;padding:14px 18px;display:flex;justify-content:space-b
 .logo-text{font-weight:900;font-size:24px;line-height:1}
 .logo-text .nx{color:#3b82f6}.logo-text .soc{color:#ff6b1a}
 .logo-text small{display:block;font-size:9px;letter-spacing:3px;color:#cbd5e1;font-weight:700}
-nav a{color:#e2e8f0;text-decoration:none;margin-left:12px;font-size:14px;font-weight:bold}
+nav a{color:#e2e8f0;text-decoration:none;margin-left:14px;font-size:14px;font-weight:bold}
 nav a:hover{color:#ff6b1a}
 .hero{background:linear-gradient(160deg,#05080f 0%,#0b1d45 58%,#133885 100%);color:white;padding:36px 20px 30px;text-align:center;border-radius:0 0 24px 24px;border-bottom:2px solid #ff6b1a}
 .hero h1{font-size:32px;line-height:1.1}.hero p{margin:14px 0;color:#cbd5e1;font-size:14px}
@@ -41,6 +41,10 @@ input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #263
 input::placeholder,textarea::placeholder{color:#64748b}
 textarea{min-height:110px;resize:vertical;font-family:monospace;font-size:13px}
 .hidden{display:none}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px}
+.dash-stat{background:#0b1d45;border:1px solid #2563eb;border-radius:14px;padding:14px}
+.dash-stat span{font-size:12px;color:#cbd5e1;display:block}
+.dash-stat b{font-size:20px;color:#ff9d66;margin-top:4px;display:block}
 .wallet{background:linear-gradient(150deg,#05080f 0%,#0b1d45 100%);color:white;border-radius:16px;padding:20px;margin:15px;border:1px solid #2563eb}
 .wallet h2{font-size:36px;margin:8px 0;padding:0;color:#ffffff}
 .vacc{background:#070b14;border:1px dashed #ff6b1a;border-radius:12px;padding:14px;color:#cbd5e1;margin-top:12px;font-size:13px;line-height:1.5}
@@ -63,9 +67,8 @@ footer{text-align:center;padding:20px;font-size:13px;color:#64748b}
   <img src="logo.png" alt="NX Socials" class="logo-img" onerror="this.style.display='none';document.getElementById('fallbackLogo').style.display='block'">
   <div id="fallbackLogo" style="display:none" class="logo-text"><span class="nx">NX</span><span class="soc">SOCIALS</span><small>.NAME.NG</small></div>
   <nav>
-    <a href="#" onclick="show('home')">Home</a>
-    <a href="#" onclick="show('wallet')">Wallet</a>
-    <a href="#" onclick="show('adminLogin')">Admin</a>
+    <a href="#home" onclick="show('home');return false;">Home</a>
+    <a href="#dashboard" onclick="openUserPortal();return false;">Dashboard</a>
   </nav>
 </header>
 
@@ -75,7 +78,7 @@ footer{text-align:center;padding:20px;font-size:13px;color:#64748b}
     <img src="logo.png" class="hero-logo" onerror="this.style.display='none'">
     <h1>Buy VPN &<br>Social Growth</h1>
     <p>Fast delivery • Trusted • Instant Payment via Paystack</p>
-    <button class="btn" onclick="show('wallet')">Create Account & Fund Wallet</button>
+    <button class="btn" onclick="openUserPortal()">Create Account & Open Dashboard</button>
   </div>
 
   <div class="section">
@@ -87,25 +90,52 @@ footer{text-align:center;padding:20px;font-size:13px;color:#64748b}
   </div>
 </div>
 
-<!-- WALLET -->
-<div id="wallet" class="hidden">
+<!-- AUTH (SIGN UP / LOGIN WHEN NOT SIGNED IN) -->
+<div id="authView" class="hidden">
   <div class="section">
     <div class="card" style="display:block">
-      <h2>Customer Account</h2>
-      <p style="margin-bottom:8px">Choose a unique username and save your details before funding or ordering.</p>
+      <h2>Create Account or Login</h2>
+      <p style="margin-bottom:8px">Choose a unique username to create your account and open your user dashboard.</p>
 
-      <div id="activeUserBanner" class="active-user-bar hidden">
-        <div id="activeUserSummary"></div>
-        <button class="btn-sm btn-secondary" onclick="logoutUser()">Switch User</button>
-      </div>
-
-      <input id="userHandle" placeholder="Unique Username e.g. chidera_vpn (cannot be reused)">
-      <input id="userName" placeholder="Your Full Name e.g. Chidera">
-      <input id="userEmail" type="email" placeholder="Valid Email Address e.g. chidera@gmail.com">
-      <input id="userWhatsapp" type="tel" placeholder="WhatsApp Number for Order Delivery">
+      <input id="authHandle" placeholder="Unique Username e.g. chidera_vpn (cannot be reused)">
+      <input id="authName" placeholder="Your Full Name e.g. Chidera">
+      <input id="authEmail" type="email" placeholder="Valid Email Address e.g. chidera@gmail.com">
+      <input id="authWhatsapp" type="tel" placeholder="WhatsApp Number for Order Delivery">
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" onclick="saveProfile()">Save / Register Account</button>
+        <button class="btn" onclick="registerUser()">Sign Up & Open Dashboard</button>
         <button class="btn btn-secondary" onclick="loginExistingUser()">Login Existing Username</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USER DASHBOARD -->
+<div id="dashboard" class="hidden">
+  <div class="section">
+    <h2>User Dashboard</h2>
+
+    <div class="card" style="display:block">
+      <div class="active-user-bar">
+        <div id="activeUserSummary"></div>
+        <button class="btn-sm btn-secondary" onclick="logoutUser()">Logout</button>
+      </div>
+      <div class="dash-grid" style="margin:8px 0 0">
+        <div class="dash-stat">
+          <span>Username</span>
+          <b id="dashUsername">@user</b>
+        </div>
+        <div class="dash-stat">
+          <span>Orders Completed</span>
+          <b id="dashOrders">0</b>
+        </div>
+        <div class="dash-stat">
+          <span>Delivered Logins</span>
+          <b id="dashLoginsCount">0</b>
+        </div>
+        <div class="dash-stat">
+          <span>WhatsApp Delivery</span>
+          <b id="dashWhatsapp" style="font-size:15px;color:#ffffff">-</b>
+        </div>
       </div>
     </div>
 
@@ -294,11 +324,19 @@ function saveState() {
 }
 
 function show(id) {
-  ['home', 'wallet', 'adminLogin', 'admin'].forEach(x => {
+  ['home', 'authView', 'dashboard', 'adminLogin', 'admin'].forEach(x => {
     document.getElementById(x).classList.add('hidden');
   });
   document.getElementById(id).classList.remove('hidden');
   window.scrollTo(0, 0);
+}
+
+function openUserPortal() {
+  if (getCurrentUser()) {
+    show('dashboard');
+  } else {
+    show('authView');
+  }
 }
 
 function isValidEmail(email) {
@@ -314,11 +352,11 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-function saveProfile() {
-  const username = normalizeUsername(document.getElementById('userHandle').value);
-  const name = document.getElementById('userName').value.trim();
-  const email = document.getElementById('userEmail').value.trim();
-  const whatsapp = document.getElementById('userWhatsapp').value.trim();
+function registerUser() {
+  const username = normalizeUsername(document.getElementById('authHandle').value);
+  const name = document.getElementById('authName').value.trim();
+  const email = document.getElementById('authEmail').value.trim();
+  const whatsapp = document.getElementById('authWhatsapp').value.trim();
 
   if (!isValidUsername(username)) {
     alert('Choose a unique username of 3-24 characters using lowercase letters, numbers, dots, underscores, or hyphens.');
@@ -329,20 +367,8 @@ function saveProfile() {
     return;
   }
 
-  const currentUser = getCurrentUser();
-  const existingRecord = state.users[username];
-
-  if (existingRecord && (!currentUser || currentUser.username !== username)) {
-    alert(`The username "${username}" is already taken by another user. Please choose a different username or use "Login Existing Username".`);
-    return;
-  }
-
-  if (currentUser && currentUser.username === username) {
-    currentUser.name = name;
-    currentUser.email = email;
-    currentUser.whatsapp = whatsapp;
-    saveState();
-    alert(`Profile updated for @${username}.`);
+  if (state.users[username]) {
+    alert(`The username "${username}" is already taken by another user. Choose a different username or click "Login Existing Username".`);
     return;
   }
 
@@ -351,27 +377,29 @@ function saveProfile() {
   state.activeUsername = username;
   state.adminLogs.unshift(`👤 New User: @${username} (${name} | ${email} | WA: ${whatsapp})`);
   saveState();
-  alert(`Account registered with unique username @${username}! You can now fund your wallet via Paystack.`);
+  show('dashboard');
+  alert(`Welcome @${username}! Your account is created and your user dashboard is now open.`);
 }
 
 function loginExistingUser() {
-  const username = normalizeUsername(document.getElementById('userHandle').value);
+  const username = normalizeUsername(document.getElementById('authHandle').value);
   if (!username || !state.users[username]) {
-    alert('No registered account found with that username. Fill all fields and click "Save / Register Account" to claim a new unique username.');
+    alert('No registered account found with that username. Fill all fields and click "Sign Up & Open Dashboard" to claim a new unique username.');
     return;
   }
   state.activeUsername = username;
   saveState();
-  alert(`Logged in as @${username}.`);
+  show('dashboard');
 }
 
 function logoutUser() {
   state.activeUsername = null;
-  document.getElementById('userHandle').value = '';
-  document.getElementById('userName').value = '';
-  document.getElementById('userEmail').value = '';
-  document.getElementById('userWhatsapp').value = '';
+  document.getElementById('authHandle').value = '';
+  document.getElementById('authName').value = '';
+  document.getElementById('authEmail').value = '';
+  document.getElementById('authWhatsapp').value = '';
   saveState();
+  show('authView');
 }
 
 function updateFeePreview() {
@@ -384,7 +412,8 @@ function updateFeePreview() {
 function payWithPaystack() {
   const user = getCurrentUser();
   if (!user || !isValidEmail(user.email)) {
-    alert('Please register/login with your unique username, name, email, and WhatsApp number first.');
+    alert('Please sign up or log in with your unique username first.');
+    show('authView');
     return;
   }
 
@@ -440,8 +469,8 @@ function buyById(productId) {
 
   const user = getCurrentUser();
   if (!user) {
-    alert('Please register or log in with your unique username and fund your wallet first.');
-    show('wallet');
+    alert('Please sign up or log in with your unique username and fund your wallet first.');
+    show('authView');
     return;
   }
 
@@ -453,8 +482,8 @@ function buyById(productId) {
 
   const price = item.isVpn ? state.vpnPrice : item.price;
   if (user.balance < price) {
-    alert(`Insufficient balance (₦${user.balance.toLocaleString()}). You need ₦${price.toLocaleString()}. Please fund your wallet first.`);
-    show('wallet');
+    alert(`Insufficient balance (₦${user.balance.toLocaleString()}). You need ₦${price.toLocaleString()}. Please fund your wallet on your dashboard first.`);
+    show('dashboard');
     return;
   }
 
@@ -479,11 +508,13 @@ function buyById(productId) {
     user.history.unshift(`🛒 [${time}] Bought ${item.name} (-₦${price.toLocaleString()}) → Login delivered`);
     state.adminLogs.unshift(`📦 Auto-Delivered: ${item.name} (₦${price.toLocaleString()}) to @${user.username} | Remaining stock: ${item.credentials.length}`);
     saveState();
-    alert(`Purchase successful for ${item.name}!\n\nYour Account Login:\n${assignedCredential}\n\nSaved under "My Purchased Logins" in your account.`);
+    show('dashboard');
+    alert(`Purchase successful for ${item.name}!\n\nYour Account Login:\n${assignedCredential}\n\nSaved under "My Purchased Logins" on your dashboard.`);
   } else {
     user.history.unshift(`🛒 [${time}] Ordered ${item.name} (-₦${price.toLocaleString()})`);
     state.adminLogs.unshift(`📦 Order: ${item.name} (₦${price.toLocaleString()}) by @${user.username} | WA: ${user.whatsapp}`);
     saveState();
+    show('dashboard');
     alert(`Order confirmed for ${item.name}! We will deliver to your WhatsApp (${user.whatsapp}) shortly.`);
   }
 }
@@ -684,17 +715,19 @@ function renderUI() {
   renderAdminProducts();
 
   const user = getCurrentUser();
-  const banner = document.getElementById('activeUserBanner');
   if (user) {
-    banner.classList.remove('hidden');
     document.getElementById('activeUserSummary').innerHTML =
-      `Active Account: <b>@${escapeHtml(user.username)}</b> (${escapeHtml(user.name)})`;
-    document.getElementById('userHandle').value = user.username;
-    document.getElementById('userName').value = user.name;
-    document.getElementById('userEmail').value = user.email;
-    document.getElementById('userWhatsapp').value = user.whatsapp;
+      `Signed in as <b>@${escapeHtml(user.username)}</b> (${escapeHtml(user.name)})`;
+    document.getElementById('dashUsername').innerText = `@${user.username}`;
+    document.getElementById('dashOrders').innerText = user.orders || 0;
+    document.getElementById('dashLoginsCount').innerText = (user.deliveredLogins || []).length;
+    document.getElementById('dashWhatsapp').innerText = user.whatsapp || '-';
   } else {
-    banner.classList.add('hidden');
+    document.getElementById('activeUserSummary').innerHTML = '';
+    document.getElementById('dashUsername').innerText = '@user';
+    document.getElementById('dashOrders').innerText = '0';
+    document.getElementById('dashLoginsCount').innerText = '0';
+    document.getElementById('dashWhatsapp').innerText = '-';
   }
 
   document.getElementById('balance').innerText = (user ? user.balance : 0).toLocaleString();
@@ -705,7 +738,7 @@ function renderUI() {
 
   const loginsEl = document.getElementById('deliveredLogins');
   if (!user) {
-    loginsEl.innerHTML = 'Register or log in with your unique username to view delivered logins.';
+    loginsEl.innerHTML = 'Sign up or log in with your unique username to view delivered logins.';
   } else if (!user.deliveredLogins || !user.deliveredLogins.length) {
     loginsEl.innerHTML = 'No account logins delivered yet.';
   } else {
@@ -739,7 +772,16 @@ function renderUI() {
   }
 }
 
+function handleDirectAdminRoute() {
+  const hash = window.location.hash.toLowerCase();
+  const search = window.location.search.toLowerCase();
+  if (hash === '#admin' || search.includes('admin=1') || search.includes('admin')) {
+    show('adminLogin');
+  }
+}
+
 renderUI();
+handleDirectAdminRoute();
 </script>
 </body>
 </html>
